@@ -59,28 +59,112 @@ void Material::prepare()
 	shader->setMatrix(shader->getLocation("normalsMatrix"), normalsMatrix);
 	shader->setMatrix(shader->getLocation("mvpMatrix"), mvpMatrix);
 
+	shader->setMatrix(shader->getLocation("modelMatrix"), State::modelMatrix);
+
+	shader->setVec3(shader->getLocation("eyePos"), State::eyePos);
+
 	// Set other variables
 	int isTexturizedLoc = getShader()->getLocation("isTexturized");
 	int hasColorLoc = getShader()->getLocation("hasColor");
-	int textureLoc = getShader()->getLocation("texSampler");
+	
 	int colorLoc = getShader()->getLocation("color");
 
 	// Check if there is a texture to be used
 	if (isTexturizedLoc != -1)
 	{
-		if (materialTexture)
+
+		if (materialTexture || normalTexture || reflectionTexture || refractionTexture)
 		{
-			
 			shader->setInt(isTexturizedLoc, 1);
-
-			shader->setInt(textureLoc, 0);
-
-			materialTexture->bind();
 		}
 		else
 		{
 			shader->setInt(isTexturizedLoc, 0);
 		}
+
+		if (materialTexture)
+		{
+			
+			shader->setInt(isTexturizedLoc, 1);
+
+			if (materialTexture->isCube())
+			{
+				materialTexture->bind(0 + 4);
+				int location = getShader()->getLocation("texSamplerCube");
+				shader->setInt(location, materialTexture->getId());
+			}
+			else
+			{
+				materialTexture->bind(0);
+				int location = getShader()->getLocation("texSampler");
+				shader->setInt(location, materialTexture->getId());
+			}
+		}
+		else
+		{
+			shader->setInt(isTexturizedLoc, 0);
+		}
+	}
+
+	if (normalTexture)
+	{
+		shader->setInt(getShader()->getLocation("hasNormalTexture"), 1);
+		if (normalTexture->isCube())
+		{
+			normalTexture->bind(1 + 4);
+			int location = getShader()->getLocation("normalTextureCube");
+			shader->setInt(location, normalTexture->getId());
+		}
+		else
+		{
+			normalTexture->bind(1);
+			int location = getShader()->getLocation("normalTexture");
+			shader->setInt(location, normalTexture->getId());
+		}
+	}
+	else
+	{
+		shader->setInt(getShader()->getLocation("hasNormalTexture"), 0);
+	}
+
+	if (reflectionTexture)
+	{
+		shader->setInt(getShader()->getLocation("hasReflectionTexture"), 1);
+		if (reflectionTexture->isCube())
+		{
+			reflectionTexture->bind(2 + 4);
+			shader->setInt(getShader()->getLocation("reflectionTextureCube"), reflectionTexture->getId());
+		}
+		else
+		{
+			reflectionTexture->bind(2);
+			shader->setInt(getShader()->getLocation("reflectionTexture"), reflectionTexture->getId());
+		}
+	}
+	else
+	{
+		shader->setInt(getShader()->getLocation("hasReflectionTexture"), 0);
+	}
+
+
+	shader->setFloat(getShader()->getLocation("refractionCoef"), refractionCoef);
+	if (refractionTexture)
+	{
+		shader->setInt(getShader()->getLocation("hasRefractionTexture"), 1);
+		if (refractionTexture->isCube())
+		{
+			refractionTexture->bind(3 + 4);
+			shader->setInt(getShader()->getLocation("refractionTextureCube"), refractionTexture->getId());
+		}
+		else
+		{
+			refractionTexture->bind(3);
+			shader->setInt(getShader()->getLocation("refractionTexture"), refractionTexture->getId());
+		}
+	}
+	else
+	{
+		shader->setInt(getShader()->getLocation("hasRefractionTexture"), 0);
 	}
 
 	// Check if there is a texture to be used
