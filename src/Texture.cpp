@@ -56,7 +56,7 @@ const glm::ivec2& Texture::getSize() const
 
 void Texture::bind(size_t layer) const
 {
-	glActiveTexture(GL_TEXTURE0 + layer);
+	glActiveTexture(GL_TEXTURE0 + static_cast<GLenum>(layer));
 
 	if (isCubemap)
 	{
