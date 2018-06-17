@@ -17,6 +17,9 @@ void Camera::prepare()
 
 	State::viewMatrix = viewMatrix;
 
+	// Write in the State the position of the camera
+	State::eyePos = position;
+
 	glViewport(viewPort.s, viewPort.t, viewPort.p, viewPort.q);
 	glScissor(viewPort.s, viewPort.t, viewPort.p, viewPort.q);
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, 1);
