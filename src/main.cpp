@@ -1,6 +1,6 @@
-#ifdef _MSC_VER
+/*#ifdef _MSC_VER
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
-#endif
+#endif*/
 
 
 #include <fstream>

@@ -16,7 +16,14 @@ public:
 	static std::shared_ptr<Texture>	load(const char* filename);
 	uint32_t						getId() const;
 	const glm::ivec2&				getSize() const;
-	void							bind() const;
+	void							bind(size_t layer = 0) const;
+
+	static std::shared_ptr<Texture> load(
+		const char* left, const char* right,
+		const char* front, const char* back,
+		const char* top, const char* bottom);
+	bool isCube() const;
+
 
 protected:
 	Texture(GLuint textureId, int height, int width);
@@ -30,4 +37,6 @@ private:
 
 	int imageHeight;
 	int imageWidth;
+
+	bool isCubemap = false;
 };
