@@ -138,6 +138,17 @@ std::shared_ptr<Mesh> Mesh::load(
 	bool includesNormals = false;
 	bool includesTangents = false;
 
+	bool isCubemap = false;
+
+	//std::shared_ptr<Texture> reflectionTexture;
+	//std::shared_ptr<Texture> refractionTexture;
+	//std::shared_ptr<Texture> normalTexture;
+
+	bool depthWrite = true;
+	Material::BlendMode blendingMode = Material::BlendMode::ALPHA;
+
+	float refractionCoef = 0.0f;
+
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filename);
 	if (result) {
@@ -157,10 +168,150 @@ std::shared_ptr<Mesh> Mesh::load(
 			std::string textureName = materialNode.child("texture").text().as_string();
 			if (textureName != "")
 			{
-				std::string fullTextureName = extractPath(filename) + textureName;
-				texture = Texture::load(fullTextureName.c_str());
+				char delim = ',';
+				std::vector<std::string>stringsVector = splitStr<std::string>(textureName, delim);
+				if (stringsVector.size() == 6)
+				{
+					std::string fullTextureName = extractPath(filename);
+
+					std::string leftString = fullTextureName + stringsVector.at(0);
+					const char* left = leftString.c_str();
+					std::string rightString = fullTextureName + stringsVector.at(1);
+					const char* right = rightString.c_str();
+					std::string frontString = fullTextureName + stringsVector.at(2);
+					const char* front = frontString.c_str();
+					std::string backString = fullTextureName + stringsVector.at(3);
+					const char* back = backString.c_str();
+					std::string topString = fullTextureName + stringsVector.at(4);
+					const char* top = topString.c_str();
+					std::string bottomString = fullTextureName + stringsVector.at(5);
+					const char* bottom = bottomString.c_str();
+
+					texture = Texture::load(left, right, front, back, top, bottom);
+
+					isCubemap = true;
+				}
+				else
+				{
+
+					std::string fullTextureName = extractPath(filename) + textureName;
+					texture = Texture::load(fullTextureName.c_str());
+				}
 				includesTexture = true;
 			}
+
+
+			std::shared_ptr<Texture> normalTexture;
+			std::string normalTextureName = materialNode.child("normal_texture").text().as_string();
+			if (normalTextureName != "")
+			{
+				char delim = ',';
+				std::vector<std::string>stringsVector = splitStr<std::string>(normalTextureName, delim);
+				if (stringsVector.size() == 6)
+				{
+					std::string fullTextureName = extractPath(filename);
+
+					std::string leftString = fullTextureName + stringsVector.at(0);
+					const char* left = leftString.c_str();
+					std::string rightString = fullTextureName + stringsVector.at(1);
+					const char* right = rightString.c_str();
+					std::string frontString = fullTextureName + stringsVector.at(2);
+					const char* front = frontString.c_str();
+					std::string backString = fullTextureName + stringsVector.at(3);
+					const char* back = backString.c_str();
+					std::string topString = fullTextureName + stringsVector.at(4);
+					const char* top = topString.c_str();
+					std::string bottomString = fullTextureName + stringsVector.at(5);
+					const char* bottom = bottomString.c_str();
+
+					normalTexture = Texture::load(left, right, front, back, top, bottom);
+				}
+				else
+				{
+
+					std::string fullTextureName = extractPath(filename) + normalTextureName;
+					normalTexture = Texture::load(fullTextureName.c_str());
+				}
+				//includesNormalTexture = true;
+			}
+
+
+			std::shared_ptr<Texture> refractionTexture;
+			std::string refractionTextureName = materialNode.child("refract_texture").text().as_string();
+			if (refractionTextureName != "")
+			{
+				char delim = ',';
+				std::vector<std::string>stringsVector = splitStr<std::string>(refractionTextureName, delim);
+				if (stringsVector.size() == 6)
+				{
+					std::string fullTextureName = extractPath(filename);
+
+					std::string leftString = fullTextureName + stringsVector.at(0);
+					const char* left = leftString.c_str();
+					std::string rightString = fullTextureName + stringsVector.at(1);
+					const char* right = rightString.c_str();
+					std::string frontString = fullTextureName + stringsVector.at(2);
+					const char* front = frontString.c_str();
+					std::string backString = fullTextureName + stringsVector.at(3);
+					const char* back = backString.c_str();
+					std::string topString = fullTextureName + stringsVector.at(4);
+					const char* top = topString.c_str();
+					std::string bottomString = fullTextureName + stringsVector.at(5);
+					const char* bottom = bottomString.c_str();
+
+					refractionTexture = Texture::load(left, right, front, back, top, bottom);
+				}
+				else
+				{
+
+					std::string fullTextureName = extractPath(filename) + refractionTextureName;
+					refractionTexture = Texture::load(fullTextureName.c_str());
+				}
+				//includesRefractionTexture = true;
+			}
+
+			// Refraction Coefficient
+			std::string refractCoefString = materialNode.child("refract_coef").text().as_string();
+			if (refractCoefString != "")
+			{
+				refractionCoef = stof(refractCoefString);
+			}
+
+
+			std::shared_ptr<Texture> reflectionTexture;
+			std::string reflectionTextureName = materialNode.child("reflect_texture").text().as_string();
+			if (reflectionTextureName != "")
+			{
+				char delim = ',';
+				std::vector<std::string>stringsVector = splitStr<std::string>(reflectionTextureName, delim);
+				if (stringsVector.size() == 6)
+				{
+					std::string fullTextureName = extractPath(filename);
+
+					std::string leftString = fullTextureName + stringsVector.at(0);
+					const char* left = leftString.c_str();
+					std::string rightString = fullTextureName + stringsVector.at(1);
+					const char* right = rightString.c_str();
+					std::string frontString = fullTextureName + stringsVector.at(2);
+					const char* front = frontString.c_str();
+					std::string backString = fullTextureName + stringsVector.at(3);
+					const char* back = backString.c_str();
+					std::string topString = fullTextureName + stringsVector.at(4);
+					const char* top = topString.c_str();
+					std::string bottomString = fullTextureName + stringsVector.at(5);
+					const char* bottom = bottomString.c_str();
+
+					reflectionTexture = Texture::load(left, right, front, back, top, bottom);
+				}
+				else
+				{
+
+					std::string fullTextureName = extractPath(filename) + reflectionTextureName;
+					reflectionTexture = Texture::load(fullTextureName.c_str());
+				}
+				//includesRefractionTexture = true;
+			}
+
 
 			// Color
 			glm::vec4 color = glm::vec4(1.0f);
@@ -188,6 +339,22 @@ std::shared_ptr<Mesh> Mesh::load(
 				shininess = 0;
 			}
 
+			std::string depthWriteString = materialNode.child("depthwrite").text().as_string();
+			if (depthWriteString != "")
+			{
+				depthWrite = materialNode.child("depthwrite").text().as_bool();
+			}
+
+			std::string blendString = materialNode.child("blend").text().as_string();
+			if (blendString != "")
+			{
+				if (blendString == "alpha")
+					blendingMode = Material::BlendMode::ALPHA;
+				if (blendString == "add")
+					blendingMode = Material::BlendMode::ADD;
+				if (blendString == "mul")
+					blendingMode = Material::BlendMode::MUL;
+			}
 
 			// Read Indices from node
 			std::vector<uint16_t> indicesVector;
@@ -257,8 +424,11 @@ std::shared_ptr<Mesh> Mesh::load(
 
 				if (includesTexture)
 				{
-					vertex.texture = glm::vec2(*textCoordsIterator, *(textCoordsIterator + 1));
-					textCoordsIterator += 2;
+					if (texCoordsVector.size() > 0)
+					{
+						vertex.texture = glm::vec2(*textCoordsIterator, *(textCoordsIterator + 1));
+						textCoordsIterator += 2;
+					}
 				}
 				
 				if (includesNormals)
@@ -277,11 +447,18 @@ std::shared_ptr<Mesh> Mesh::load(
 			}
 
 			Material material = Material::Material(texture, nullptr);
+
+			material.setNormalTexture(normalTexture);
+			material.setReflectionTexture(reflectionTexture);
+			material.setRefractionTexture(refractionTexture);
+			material.setRefractionCoef(refractionCoef);
+
 			material.setShininess(shininess);
 			material.setColor(color);
 			material.setCulling(true);
 			material.setLighting(true);
-			material.setDepthWrite(true);
+			material.setBlendMode(blendingMode);
+			material.setDepthWrite(depthWrite);
 
 
 
