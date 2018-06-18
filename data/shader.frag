@@ -67,13 +67,23 @@ LightComponents calculateLight(int i)
 
 	if (hasNormalTexture)
 	{
-		/*vec3 normalTextureSample = texture2D(normalTexture, fTexture).xyz;
-		vec3 normalizedTextureSample = normalize((normalTextureSample * 0.5) + 0.5);
-		normalizedN = normalize(normalizedTextureSample * tbn);*/
+		// Lee una normal de la textura
+		vec3 normalTextureSample;
+		if (isCubemap)
+		{
+			normalTextureSample = textureCube(normalTextureCube, uvw).xyz;
+		}
+		else
+		{
+			normalTextureSample = texture2D(normalTexture, fTexture).xyz;
+		}
 
-		//normalizedN =  texture2D(normalTexture, fTexture).xyz;
+		// Convertirla a normal a partir de rgb... Segun apuntes, para pasar de normal a normal = (rgb * 0.5) + 0.5
+		// Paso contrario rgb = (normal - 0.5) / 0.5
+		normalTextureSample = (normalTextureSample - 0.5) / 0.5;
 
-		normalizedN = texture2D(normalTexture, vec2(1, 1)).xyz;
+		// Multiplicar por TBN
+		normalizedN = normalTextureSample * tbn;
 	}
 
 	vec3 L = lights[i].lightVector.xyz;
@@ -132,24 +142,19 @@ void main()
 		{
 			if (isTexturized)
 			{
-				vec4 postLightColor = vec4(1.0, 1.0, 1.0, 1.0);
+				vec4 postLightColor;
 				if (isCubemap)
 				{
-					//gl_FragColor = (vec4(1.0, 1.0, 1.0, 1.0) * diffuseComponent * color * textureCube(texSamplerCube, uvw)) + specularComponent;
-					postLightColor *= textureCube(texSamplerCube, uvw);
+					postLightColor = (vec4(1.0, 1.0, 1.0, 1.0) * diffuseComponent * 
+										color * textureCube(texSamplerCube, uvw)) + specularComponent;
 				}
 				else
 				{
-					//gl_FragColor = (vec4(1.0, 1.0, 1.0, 1.0) * diffuseComponent * color * texture2D(texSampler, fTexture)) + specularComponent;
-					//gl_FragColor = color;
-					postLightColor *= texture2D(texSampler, fTexture);
+					postLightColor = (vec4(1.0, 1.0, 1.0, 1.0) * diffuseComponent *
+										color * texture2D(texSampler, fTexture)) + specularComponent;
 				}
 
-				postLightColor *= color;
-				postLightColor *= diffuseComponent;
-				postLightColor += specularComponent;
-
-				/*vec4 reflectionColor = vec4(0.0, 0.0, 0.0, 0.0);
+				vec4 reflectionColor = vec4(0.0, 0.0, 0.0, 0.0);
 				if (hasReflectionTexture)
 				{
 					if (isCubemap)
@@ -178,20 +183,18 @@ void main()
 				vec3 mixedColor = mix(postLightColor.rgb, reflectionColor.rgb, reflectionColor.a);
 				mixedColor = mix(mixedColor.rgb, refractionColor.rgb, refractionColor.a);
 
-				gl_FragColor = vec4(mixedColor, 1.0f);*/
-
-				gl_FragColor = postLightColor;
-
+				gl_FragColor = vec4(mixedColor, 1.0f);
 			}
 			else
 			{
 				gl_FragColor = (diffuseComponent * color) + specularComponent;
 			}
+			
 		}
 
 		// for debugging
-		gl_FragColor = vec4(normalizedN, 1);
-
+		//gl_FragColor = vec4(normalizedN, 1);
+		
 	}
 	else
 	{
@@ -199,6 +202,8 @@ void main()
 		{
 			gl_FragColor = diffuse * texture2D(texSampler, fTexture);
 			//gl_FragColor = color;
+
+			gl_FragColor = vec4(1, 1, 1, 1);
 		}
 		else
 		{
@@ -214,4 +219,6 @@ void main()
 	{
 		gl_FragColor = vec4(1.0);
 	}*/
+
+	//gl_FragColor = vec4(1, 1, 1, 1);
 }

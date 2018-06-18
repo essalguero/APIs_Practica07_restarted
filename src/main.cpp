@@ -95,7 +95,7 @@ int createModelsInWorld(World & world, std::vector<Emitter>& emittersVector)
 
 
 	// Load Suzanne model from file
-	/*std::shared_ptr<Mesh> suzanneMesh = Mesh::load("data/suzanne_refract.msh.xml");
+	std::shared_ptr<Mesh> suzanneMesh = Mesh::load("data/suzanne_refract.msh.xml");
 
 	if (suzanneMesh == nullptr)
 	return 0;
@@ -121,7 +121,7 @@ int createModelsInWorld(World & world, std::vector<Emitter>& emittersVector)
 	teapotModel->setPosition(glm::vec3(4.0f, 0.0f, 0.0f));
 
 	// Add model
-	world.addEntity(teapotModel);*/
+	world.addEntity(teapotModel);
 
 
 	// Load the cube model from file
@@ -143,7 +143,7 @@ int createModelsInWorld(World & world, std::vector<Emitter>& emittersVector)
 	// Set Lighting
 	world.setAmbient(glm::vec3(0.1, 0.1, 0.1));
 	std::shared_ptr<Light>pointLight = std::make_shared<Light>(vec3(1.0f, 1.0f, 1.0f), Light::Type::POINT,
-		glm::vec3(.4f, .4f, .4f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		glm::vec3(1.0f, 1.0f, 1.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 
 	world.addEntity(pointLight);
 
@@ -266,8 +266,8 @@ int main(int, char**) {
 		//Camera rotation
 		camera->setPosition(glm::vec3(0, 0, 0));
 		angle += 32 * deltaTime;
-		camera->setRotation(glm::vec3(-30, angle, 0));
-		camera->move(glm::vec3(0, 2, 15));
+		camera->setRotation(glm::vec3(0, angle, 0));
+		camera->move(glm::vec3(0, 0, 10));
 		camera->setPosition(camera->getPosition());
 
 		world.getEntity(1)->setPosition(camera->getPosition());

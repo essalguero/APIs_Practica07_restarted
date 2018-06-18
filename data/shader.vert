@@ -50,18 +50,20 @@ void main() {
 	vec3 eye = normalize(vec3(ModelMatrix * vec4(vpos, 1)) - eyePos);
 	vec3 normal = vec3(ModelMatrix * vec4(vnormal, 0));
 
-	/*if (hasRefractionTexture)
+	if (hasRefractionTexture)
 	{
 		uvw = normalize(refract(eye, normal, refractionCoef));
+		uvw = normalize(vpos);
 	}
 	else if (hasReflectionTexture)
 	{
 		uvw = normalize(reflect(eye, normal));
+		uvw = normalize(vpos);
 	}
 	else 
 	{
 		uvw = normalize(vpos);
-	}*/
+	}
 
 
 }
