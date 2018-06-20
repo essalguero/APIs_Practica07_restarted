@@ -79,7 +79,7 @@ std::shared_ptr<Texture> Texture::load(
 
 	// Flip image as the image in files is stored in top/bottom order
 	// while OpenGL is expecting the file to be in bottom/up order
-	stbi_set_flip_vertically_on_load(true);
+	//stbi_set_flip_vertically_on_load(true);
 
 
 	
@@ -92,42 +92,42 @@ std::shared_ptr<Texture> Texture::load(
 	stbi_uc* stbiImageLoaded = stbi_load(right, &imageHeight, &imageWidth, nullptr, 4);
 	if (!stbiImageLoaded)
 		return nullptr;
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, stbiImageLoaded);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, stbiImageLoaded);
 	stbi_image_free(stbiImageLoaded);
 
 
 	stbiImageLoaded = stbi_load(left, &imageHeight, &imageWidth, nullptr, 4);
 	if (!stbiImageLoaded)
 		return nullptr;
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, stbiImageLoaded);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, stbiImageLoaded);
 	stbi_image_free(stbiImageLoaded);
 
 
 	stbiImageLoaded = stbi_load(top, &imageHeight, &imageWidth, nullptr, 4);
 	if (!stbiImageLoaded)
 		return nullptr;
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, stbiImageLoaded);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, stbiImageLoaded);
 	stbi_image_free(stbiImageLoaded);
 
 
 	stbiImageLoaded = stbi_load(bottom, &imageHeight, &imageWidth, nullptr, 4);
 	if (!stbiImageLoaded)
 		return nullptr;
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, stbiImageLoaded);
-	stbi_image_free(stbiImageLoaded);
-
-
-	stbiImageLoaded = stbi_load(back, &imageHeight, &imageWidth, nullptr, 4);
-	if (!stbiImageLoaded)
-		return nullptr;
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, stbiImageLoaded);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, stbiImageLoaded);
 	stbi_image_free(stbiImageLoaded);
 
 
 	stbiImageLoaded = stbi_load(front, &imageHeight, &imageWidth, nullptr, 4);
 	if (!stbiImageLoaded)
 		return nullptr;
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, stbiImageLoaded);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, stbiImageLoaded);
+	stbi_image_free(stbiImageLoaded);
+
+
+	stbiImageLoaded = stbi_load(back, &imageHeight, &imageWidth, nullptr, 4);
+	if (!stbiImageLoaded)
+		return nullptr;
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, stbiImageLoaded);
 	stbi_image_free(stbiImageLoaded);
 
 

@@ -461,8 +461,6 @@ std::shared_ptr<Mesh> Mesh::load(
 			material.setDepthWrite(depthWrite);
 
 
-
-
 			std::shared_ptr<Buffer> buffer = Buffer::create(vertexVector, indicesVector);
 
 			mesh->addBuffer(buffer, material);

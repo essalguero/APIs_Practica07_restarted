@@ -21,14 +21,14 @@ uniform bool hasRefractionTexture;
 uniform bool hasReflectionTexture;
 
 varying vec3 uvw;
-attribute float refractionCoef;
+uniform float refractionCoef;
 uniform vec3 eyePos;
 uniform mat4 ModelMatrix;
 
 void main() {
 	gl_Position = mvpMatrix * vec4(vpos, 1);
-	vec4 tempN = normalsMatrix * vec4(vnormal, 1);
-	N = tempN.xyz;
+	vec4 tempN = normalsMatrix * vec4(vnormal, 0);
+	N = normalize(tempN.xyz);
 
 	vertexObserver = mvMatrix * vec4(vpos, 1);
 	
@@ -36,14 +36,16 @@ void main() {
 	
 	// Calculos para normal mapping
 	// Obtenido anteriormente en tempN
-	//vec4 normalVector = normalsMatrix * vec4(vnormal, 1);
+	//vec4 normalVector = normalsMatrix * vec4(vnormal, 0);
 
+	// Calcular la matriz TBN con el vector normal y el vector tangente al vértice
 	//tangent vector
-	vec4 tangentVector = normalsMatrix * vec4(vtangent, 1);
+	vec3 tangentVector = normalize((normalsMatrix * vec4(vtangent, 0)).xyz);
 
-	vec3 bitangent = cross(tempN.xyz, tangentVector.xyz);
+	vec3 bitangent = normalize(cross(N, tangentVector.xyz));
 
-	tbn = transpose(mat3(tangentVector.xyz, bitangent.xyz, tempN.xyz));
+	//mat3 es matriz definida en columnas
+	tbn = mat3(tangentVector, bitangent, N);
 
 
 	// Cubemapping
@@ -53,12 +55,14 @@ void main() {
 	if (hasRefractionTexture)
 	{
 		uvw = normalize(refract(eye, normal, refractionCoef));
-		uvw = normalize(vpos);
+		//uvw = refract(eye, normal, refractionCoef);
+		//uvw = normalize(vpos);
 	}
 	else if (hasReflectionTexture)
 	{
 		uvw = normalize(reflect(eye, normal));
-		uvw = normalize(vpos);
+		//uvw = reflect(eye, normal);
+		//uvw = normalize(vpos);
 	}
 	else 
 	{

@@ -89,6 +89,7 @@ int createModelsInWorld(World & world, std::vector<Emitter>& emittersVector)
 	shared_ptr<Model> skyboxModel = make_shared<Model>(skyboxMesh);
 	//skyboxModel->setScale(vec3(20.0f, 20.0f, 20.0f));
 	skyboxModel->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	//skyboxMesh->getMaterial(0).setLighting(false);
 
 	// Add model
 	world.addEntity(skyboxModel);
@@ -126,6 +127,7 @@ int createModelsInWorld(World & world, std::vector<Emitter>& emittersVector)
 
 	// Load the cube model from file
 	std::shared_ptr<Mesh> cubeMesh = Mesh::load("data/cube.msh.xml");
+	//cubeMesh->getMaterial(0).setNormalTexture(nullptr);
 
 	if (cubeMesh == nullptr)
 		return 0;
@@ -270,6 +272,7 @@ int main(int, char**) {
 		camera->move(glm::vec3(0, 0, 10));
 		camera->setPosition(camera->getPosition());
 
+		// Set position para el skybox y para la luz
 		world.getEntity(1)->setPosition(camera->getPosition());
 		world.getEntity(world.getNumEntities() - 1)->setPosition(camera->getPosition());
 

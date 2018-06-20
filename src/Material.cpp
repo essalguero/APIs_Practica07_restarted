@@ -59,7 +59,7 @@ void Material::prepare()
 	shader->setMatrix(shader->getLocation("normalsMatrix"), normalsMatrix);
 	shader->setMatrix(shader->getLocation("mvpMatrix"), mvpMatrix);
 
-	shader->setMatrix(shader->getLocation("modelMatrix"), State::modelMatrix);
+	shader->setMatrix(shader->getLocation("ModelMatrix"), State::modelMatrix);
 
 	shader->setVec3(shader->getLocation("eyePos"), State::eyePos);
 
@@ -85,11 +85,13 @@ void Material::prepare()
 
 	if (materialTexture)
 	{
+		shader->setInt(getShader()->getLocation("hasTexture"), 1);
+
 		if (materialTexture->isCube())
 		{
 			materialTexture->bind(0 + 4);
 			int location = getShader()->getLocation("texSamplerCube");
-			shader->setInt(location, GL_TEXTURE0 + 4);
+			shader->setInt(location, 0 + 4);
 			location = getShader()->getLocation("isCubemap");
 			shader->setInt(location, 1);
 		}
@@ -97,10 +99,14 @@ void Material::prepare()
 		{
 			materialTexture->bind(0);
 			int location = getShader()->getLocation("texSampler");
-			shader->setInt(location, GL_TEXTURE0);
+			shader->setInt(location, 0);
 			location = getShader()->getLocation("isCubemap");
 			shader->setInt(location, 0);
 		}
+	}
+	else
+	{
+		shader->setInt(getShader()->getLocation("hasTexture"), 0);
 	}
 
 	if (normalTexture)
@@ -111,7 +117,7 @@ void Material::prepare()
 		{
 			normalTexture->bind(1 + 4);
 			int location = getShader()->getLocation("normalTextureCube");
-			shader->setInt(location, GL_TEXTURE0 + 1 + 4);
+			shader->setInt(location, 1 + 4);
 			location = getShader()->getLocation("isCubemap");
 			shader->setInt(location, 1);
 		}
@@ -119,7 +125,7 @@ void Material::prepare()
 		{
 			normalTexture->bind(1);
 			int location = getShader()->getLocation("normalTexture");
-			shader->setInt(location, GL_TEXTURE0 + 1);
+			shader->setInt(location, 1);
 			location = getShader()->getLocation("isCubemap");
 			shader->setInt(location, 0);
 		}
@@ -136,14 +142,14 @@ void Material::prepare()
 		if (reflectionTexture->isCube())
 		{
 			reflectionTexture->bind(2 + 4);
-			shader->setInt(getShader()->getLocation("reflectionTextureCube"), GL_TEXTURE0 + 2 + 4);
+			shader->setInt(getShader()->getLocation("reflectionTextureCube"), 2 + 4);
 			location = getShader()->getLocation("isCubemap");
 			shader->setInt(location, 1);
 		}
 		else
 		{
 			reflectionTexture->bind(2);
-			shader->setInt(getShader()->getLocation("reflectionTexture"), GL_TEXTURE0 + 2);
+			shader->setInt(getShader()->getLocation("reflectionTexture"), 2);
 			location = getShader()->getLocation("isCubemap");
 			shader->setInt(location, 0);
 		}
@@ -163,7 +169,7 @@ void Material::prepare()
 		if (refractionTexture->isCube())
 		{
 			refractionTexture->bind(3 + 4);
-			shader->setInt(getShader()->getLocation("refractionTextureCube"), GL_TEXTURE0 + 3 + 4);
+			shader->setInt(getShader()->getLocation("refractionTextureCube"), 3 + 4);
 
 			location = getShader()->getLocation("isCubemap");
 			shader->setInt(location, 1);
@@ -171,7 +177,7 @@ void Material::prepare()
 		else
 		{
 			refractionTexture->bind(3);
-			shader->setInt(getShader()->getLocation("refractionTexture"), GL_TEXTURE0 + 3);
+			shader->setInt(getShader()->getLocation("refractionTexture"), 3);
 			location = getShader()->getLocation("isCubemap");
 			shader->setInt(location, 0);
 		}

@@ -45,10 +45,10 @@ void Light::prepare(int index, std::shared_ptr<Shader>& shader) const
 	{
 		// Pass the position in observer space
 		glm::vec4 positionForShader;
-		positionForShader = glm::vec4(1, 1, 1, lightType);
+		/*positionForShader = glm::vec4(1, 1, 1, lightType);
 		positionForShader = glm::rotate(glm::translate(glm::mat4(), position), glm::angle(rotationQuat),
-			glm::axis(rotationQuat)) * positionForShader;
-		positionForShader = State::viewMatrix * positionForShader;
+			glm::axis(rotationQuat)) * positionForShader;*/
+		positionForShader = State::viewMatrix * glm::vec4(position, 1);
 		location = shader->getLocation(variableName.c_str());
 		shader->setVec4(location, positionForShader);
 	}
