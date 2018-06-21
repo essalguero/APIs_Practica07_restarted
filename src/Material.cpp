@@ -191,8 +191,10 @@ void Material::prepare()
 	if (hasColorLoc != -1)
 	{
 		shader->setInt(hasColorLoc, 1);
-		shader->setVec4(colorLoc, materialColor);
+		
 	}
+	shader->setVec4(colorLoc, materialColor);
+
 
 	int variableLocation = shader->getLocation("numberLights");
 	if (lighting)
